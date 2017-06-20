@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC   
+    "-//mybatis.org//DTD Mapper 3.0//EN"  
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.JBlog.dao.ArticleMapper">
+
+	<select id="SelectAll" resultType="cn.JBlog.bean.Article">
+		Select * from articles
+	</select>
+
+	<select id="SelectByTag" parameterType="string" resultType="cn.JBlog.bean.Article">
+		Select * from articles where tag=#{tag}
+	</select>
+
+	<update id="updateArticle" parameterType="cn.JBlog.bean.Article">
+		update articles set
+		updateDate=#{updateDate},tag=#{tag},content=#{content}
+		where id=#{id}
+	</update>
+
+	<delete id="Delete">
+		delete from articles where id=#{id}
+	</delete>
+
+	<insert id="insertArticle" parameterType="cn.JBlog.bean.Article"
+		useGeneratedKeys="true" keyProperty="id">
+		insert into
+		articles(title,tag,createDate,type) values
+		{#{title},#{tag},#{createDate},#{type}}
+	</insert>
+</mapper>

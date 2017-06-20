@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx 
+           http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+           http://www.springframework.org/schema/task
+		   http://www.springframework.org/schema/task/spring-task-3.0.xsd">
+
+	<context:component-scan base-package="cn.JBlog.util,cn.JBlog.service,cn.JBlog.dao" />
+
+	<!-- 注册协助普通类获取bean的工具类 -->
+	<bean id="SpringContextUtil" class="cn.JBlog.util.SpringContextUtil"
+		scope="singleton"></bean>
+
+
+	<!-- 读属性文件，配置数据库 -->
+	<context:property-placeholder
+		location="classpath:config/mybatis/jdbc.properties" />
+
+	<!-- jdbc方式 -->
+	<!-- <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"> 
+		<property name="driverClassName" value="${jdbc.driverClassName}" /> <property 
+		name="url" value="${jdbc.url}" /> <property name="username" value="${jdbc.username}" 
+		/> <property name="password" value="${jdbc.password}" /> </bean> -->
+	<!-- 连接池（dbcp） -->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driver}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<property name="initialSize" value="10" />
+		<property name="maxActive" value="30" />
+		<property name="maxIdle" value="10" />
+		<property name="minIdle" value="5" />
+		<property name="validationQuery" value="select 1" />
+		<property name="testOnBorrow" value="true" />
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="120" />
+		<property name="timeBetweenEvictionRunsMillis" value="600000" />
+		<property name="minEvictableIdleTimeMillis" value="3600000" />
+	</bean>
+
+	<!-- 结束 -->
+
+
+	<!-- 定义sqlSessionFactory，以及sqlSession -->
+	<!-- sqlSession为数据会话用于操作数据库，在UserController.java中会注入SqlSession的对象用以操作数据库 -->
+
+	<!-- define the SqlSessionFactory, notice that configLocation is not needed 
+		when you use MapperFactoryBean -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="mapperLocations" value="classpath*:config/mybatis/mapper/*.xml" />
+		<property name="typeAliasesPackage" value="cn.JBlog.bean" />
+	</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="cn.JBlog.dao" />
+		<!-- <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"></property> -->
+	</bean>
+	<!-- <bean id="ArticleMapper" class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+		<property name="mapperInterface" value="cn.JBlog.dao.ArticleMapper"></property> 
+		<property name="sqlSessionFactory" ref="sqlSessionFactory"></property> </bean> -->
+	<!-- SQLSession Configuration start -->
+	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg index="0" ref="sqlSessionFactory" />
+	</bean>
+	<!-- 结束 -->
+
+	<!-- 定时器注解驱动 -->
+	<task:annotation-driven executor="executor"
+		scheduler="scheduler" />
+	<!-- 调度器 -->
+	<task:scheduler id="scheduler" pool-size="10" />
+	<!-- 执行器 -->
+	<task:executor id="executor" keep-alive="3" pool-size="100-200"
+		queue-capacity="500" rejection-policy="CALLER_RUNS" />
+
+
+</beans>
