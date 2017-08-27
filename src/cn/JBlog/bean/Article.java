@@ -9,8 +9,13 @@ public class Article {
 	Date createDate;// 建立时间
 	Date updateDate;// 更新时间
 	String reads;// 阅读量
-	String content;// 内容存储位置
-	String type;// 分发布和草稿两种
+	String content;//内容
+	String source;// 内容存储位置
+	String status;// 分发布和草稿两种
+	String url;//获取文章所需的url地址
+	int size;//文章大小
+	Image []image;
+	
 	
 	public int getId() {
 		return id;
@@ -48,16 +53,41 @@ public class Article {
 	public void setReads(String reads) {
 		this.reads = reads;
 	}
+	public String getSource() {
+		return source;
+	}
+	public void setSource(String source) {
+		this.source = source;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getUrl() {
+		return url;
+	}
+	public void setUrl(String url) {
+		this.url = url;
+	}
+	public int getSize() {
+		return size;
+	}
+	public void setSize(int size) {
+		this.size = size;
+	}
+	public Image[] getImage() {
+		return image;
+	}
+	public void setImage(Image[] image) {
+		this.image = image;
+	}
 	public String getContent() {
 		return content;
 	}
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public String getType() {
-		return type;
-	}
-	public void setType(String type) {
-		this.type = type;
-	}
+	
 }

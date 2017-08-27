@@ -8,7 +8,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>管理我的婧雪蔷薇杂记集</title>
+<title>婧雪蔷薇杂记  VickyDan's Miscellanea</title>
 
 <link rel="stylesheet" type="text/css"
 	href="${path}/assests/JS/jquery-easyui-1.5.1/themes/default/easyui.css" />
@@ -23,8 +23,9 @@
 	src="${path}/assests/JS/jquery-easyui-1.5.1/jquery.easyui.min.js"></script>
 </head>
 <body >
-	<div class="title">整理我的杂记集</div>
-	<div class="wrapper">
+<div class="wrapper">
+	<div class="title"></div>
+	
 	<div class="content" style="min-height: 600px;">
 		<table id="dg" title="关于我的文章" style="margin: 0 auto;width: 800px;">
 			<thead>

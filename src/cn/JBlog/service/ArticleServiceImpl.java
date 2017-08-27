@@ -32,10 +32,12 @@ public class ArticleServiceImpl implements ArticleService{
 
 
 	public int update(Article article) {
-		if(article.getId()==-1)
-		return ad.updateArticle(article);
-		else
+		if(article.getId()==-1){
+			return ad.updateArticle(article);
+		}
+		else{
 			return ad.insertArticle(article);
+			}
 	}
 
 	

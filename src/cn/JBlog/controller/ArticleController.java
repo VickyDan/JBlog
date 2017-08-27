@@ -1,5 +1,11 @@
 package cn.JBlog.controller;
 
+import java.awt.Window;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,11 +23,10 @@ import cn.JBlog.service.ArticleService;
 
 @Controller
 public class ArticleController {
-
 	Logger logger = Logger.getLogger(this.getClass());
 	@Autowired
 	private ArticleService as;
-
+    
 	@RequestMapping("/articles")
 	@ResponseBody
 	public String getArticles(HttpServletResponse response) throws JSONException {
@@ -36,9 +41,11 @@ public class ArticleController {
 				ob.put("id", a.getId());
 				ob.put("title", a.getTitle());
 				ob.put("tag", a.getTag());
+				ob.put("content", a.getContent());
+				ob.put("size", a.getSize());
 				ob.put("createDate", a.getCreateDate());
 				ob.put("updateDate", a.getUpdateDate());
-				ob.put("type", a.getType());
+				ob.put("status", a.getStatus());
 				jsonArray.put(ob);
 			}
 		jsonObject.put("total", i);
@@ -49,19 +56,41 @@ public class ArticleController {
 
 	@RequestMapping("/updateArticle")
 	@ResponseBody
-	String updateArticle(Article article, HttpServletResponse response) {
-		if (article.getTitle().trim().length() == 0) {
+	String updateArticle(@RequestParam("id")int id,@RequestParam("title")String title,@RequestParam("tag")String tag,@RequestParam("content")String content, HttpServletResponse response) {
+		if (title.trim().length() == 0) {
 			return "illegal";
 		}
-		if (article.getId() == 0) {
+		else if (id == 0) {
 			return "wrong";
 		}
 
-		if (as.update(article) == 1) {
+		else{
+			//Date nowD=Window.
+			String filepath="F:\\JavaWebProject\\VickyDanBlog\\JBlog\\WebContent\\assests\\upload\\article\\"+title+".html";
+			File file=new File(filepath);
+			try {
+				FileOutputStream stream=new FileOutputStream(file);
+				stream.write(content.getBytes());
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			Article article=new Article();
+			article.setContent(content);
+			article.setTitle(title);
+			article.setTag(tag);
+			article.setId(id);
+			article.setSource(filepath);
+			if (as.update(article) == 1) {
 			return "success";
-		} else {
+			
+			} else {
 			logger.info("更新或删除文章失败：" + article.getTitle());
 			return "wrong";
+		}
 		}
 	}
 
@@ -85,9 +114,11 @@ public class ArticleController {
 			ob.put("id", a.getId());
 			ob.put("title", a.getTitle());
 			ob.put("tag", a.getTag());
+			ob.put("content", a.getContent());
+			ob.put("size", a.getSize());
 			ob.put("createDate", a.getCreateDate());
 			ob.put("updateDate", a.getUpdateDate());
-			ob.put("type", a.getType());
+			ob.put("status", a.getStatus());
 			jsonArray.put(ob);
 		}
 		jsonObject.put("total", i);
